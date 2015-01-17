@@ -1,0 +1,10 @@
+<project>
+    <property>
+        <name>data_dir</name>
+    <value>D:\Books</value>
+    </property>
+    <property>
+        <name>base_dir</name>
+    <value>shivram</value>
+    </property>
+</project>
