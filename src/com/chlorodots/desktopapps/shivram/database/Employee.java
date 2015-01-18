@@ -12,10 +12,10 @@ public class Employee {
    public int emp_id;
    public String emp_name;
    public String emp_address;
-   public int emp_phone_number;
+   public String emp_phone_number;
    public String emp_designation;
 
-    public Employee(int emp_id, String emp_name, String emp_address, int emp_phone_number) {
+    public Employee(int emp_id, String emp_name, String emp_address, String emp_phone_number) {
         this.emp_id = emp_id;
         this.emp_name = emp_name;
         this.emp_address = emp_address;
@@ -70,14 +70,14 @@ public class Employee {
     /**
      * @return the emp_phone_number
      */
-    public int getEmp_phone_number() {
+    public String getEmp_phone_number() {
         return emp_phone_number;
     }
 
     /**
      * @param emp_phone_number the emp_phone_number to set
      */
-    public void setEmp_phone_number(int emp_phone_number) {
+    public void setEmp_phone_number(String emp_phone_number) {
         this.emp_phone_number = emp_phone_number;
     }
 

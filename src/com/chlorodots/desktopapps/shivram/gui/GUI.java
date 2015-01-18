@@ -8,8 +8,10 @@ import com.chlorodots.desktopapps.shivram.database.DatabaseAccessHandler;
 import com.chlorodots.desktopapps.shivram.database.Employee;
 import com.chlorodots.desktopapps.shivram.database.Job;
 import com.chlorodots.desktopapps.shivram.database.Loan;
+import java.util.ArrayList;
 import javax.swing.JFrame;
-
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,22 +19,25 @@ import javax.swing.JFrame;
  */
 public class GUI extends javax.swing.JFrame {
 
+    DatabaseAccessHandler db;
+     
     /**
      * Creates new form NewJFrame
      */
     public GUI() {
+        db= new DatabaseAccessHandler();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         setResizable(false);
     }
 
-    public Employee getEmployee() {      
+    public Employee getEmployee() {
         Employee employee = new Employee();
         employee.setEmp_name(emp_name.getText());
         employee.setEmp_designation(emp_designation.getText());
         employee.setEmp_address(emp_address.getText());
-        employee.setEmp_phone_number(Integer.parseInt(emp_phone_number.getText()));
+        employee.setEmp_phone_number(emp_phone_number.getText());
         return employee;
     }
 
@@ -44,13 +49,26 @@ public class GUI extends javax.swing.JFrame {
         return loan;
     }
 
-    /**
-     * @return the job
-     */
-//    public Job getJob() {
-////        Job job = new Job();
-////        return job;
-//    }
+    public void populate_Table(Object obj) {
+
+        switch (obj.getClass().getSimpleName()) {
+            case "Employee":
+                System.out.print(obj.getClass().getSimpleName());
+                db.openDatabse();
+                ArrayList allEmp = db.getAllEmployees();
+                db.closeDatabse();
+                addToTable(empTable, allEmp);
+                DefaultTableModel model = (DefaultTableModel) empTable.getModel();
+
+                break;
+            case "Loan":
+                break;
+            case "Job":
+                break;
+
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -264,10 +282,10 @@ public class GUI extends javax.swing.JFrame {
         jTextField108 = new javax.swing.JTextField();
         jLabel135 = new javax.swing.JLabel();
         jLabel136 = new javax.swing.JLabel();
-        employee = new javax.swing.JTabbedPane();
+        employeemanagement = new javax.swing.JTabbedPane();
         addremove = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        empTable = new javax.swing.JTable();
         employee_details = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -2055,20 +2073,28 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane9.addTab("Shift Management", shift);
 
-        employee.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        employeemanagement.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        empTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Employee ID", "Employee Name", "Phone Number", "Address"
+                "Employee ID", "Employee Name", "Phone Number", "Address", "Designation"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(empTable);
 
         employee_details.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -2201,7 +2227,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
         );
 
-        employee.addTab("Add/Remove Employee", addremove);
+        employeemanagement.addTab("Add/Remove Employee", addremove);
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2387,7 +2413,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jScrollPane16, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE))
         );
 
-        employee.addTab("Loan", loan);
+        employeemanagement.addTab("Loan", loan);
 
         jTable5.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2553,9 +2579,9 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jScrollPane18, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE))
         );
 
-        employee.addTab("Employee Expense", employeeexpense);
+        employeemanagement.addTab("Employee Expense", employeeexpense);
 
-        jTabbedPane9.addTab("Employee Management", employee);
+        jTabbedPane9.addTab("Employee Management", employeemanagement);
 
         jTable7.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2782,15 +2808,15 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void emp_addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_emp_addMouseClicked
-      
     }//GEN-LAST:event_emp_addMouseClicked
 
     private void emp_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emp_addActionPerformed
         // TODO add your handling code here:
-       DatabaseAccessHandler db = new DatabaseAccessHandler();
-       db.setEmployee(getEmployee());
-       
-//     uim.populate_Table(employee);
+        db.openDatabse();
+        Employee emp = getEmployee();
+        db.setEmployee(emp);
+        db.closeDatabse();
+        populate_Table(emp);
     }//GEN-LAST:event_emp_addActionPerformed
 
     private void emp_designationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emp_designationActionPerformed
@@ -2833,15 +2859,16 @@ public class GUI extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel addremove;
+    private javax.swing.JTable empTable;
     private javax.swing.JButton emp_add;
     private javax.swing.JTextArea emp_address;
     private javax.swing.JTextField emp_designation;
     private javax.swing.JTextField emp_id;
     private javax.swing.JTextField emp_name;
     private javax.swing.JTextField emp_phone_number;
-    private javax.swing.JTabbedPane employee;
     private javax.swing.JPanel employee_details;
     private javax.swing.JPanel employeeexpense;
+    private javax.swing.JTabbedPane employeemanagement;
     private javax.swing.JPanel expense;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
@@ -3012,7 +3039,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane9;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable14;
     private javax.swing.JTable jTable15;
     private javax.swing.JTable jTable16;
@@ -3109,4 +3135,15 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JPanel shift;
     // End of variables declaration//GEN-END:variables
+
+    private void addToTable(JTable Table, ArrayList all) {
+        DefaultTableModel model = (DefaultTableModel) Table.getModel();
+        for (Object obj : all) {
+            if (obj instanceof Employee) {
+                Employee emp = (Employee) obj;
+                String[] data = {emp.emp_id + "", emp.emp_name, emp.emp_designation, emp.emp_phone_number, emp.emp_address};
+                model.addRow(data);
+            }
+        }
+    }
 }
