@@ -113,11 +113,13 @@ public class DatabaseAccessHandler {
             statement.execute(addRow);
             ResultSet rs = statement.getResultSet();
             while ((rs != null) && (rs.next())) {
-                emp.setEmp_id(rs.getInt(0));
-                emp.setEmp_name(rs.getString(1));
-                emp.setEmp_designation(rs.getString(2));
-                emp.setEmp_phone_number(rs.getString(3));
-                emp.setEmp_address(rs.getString(4));
+         
+                emp.setEmp_id(rs.getInt(1));
+                emp.setEmp_name(rs.getString(2));
+                emp.setEmp_designation(rs.getString(3));
+                emp.setEmp_phone_number(rs.getString(4));
+                emp.setEmp_address(rs.getString(5));
+                System.out.println(  "" + emp.emp_id);
                 empAll.add(emp);
             }
         } catch (SQLException ex) {
